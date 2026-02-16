@@ -1,0 +1,74 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: Order Service Alerts
+    folder: Observability Demo
+    interval: 30s
+    rules:
+      - uid: order-error-rate-high
+        title: "Order Error Rate High"
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: ""
+            model:
+              expr: sum(rate(span_metrics_calls_total{service_name="order-service", span_kind="SPAN_KIND_SERVER", status_code="STATUS_CODE_ERROR"}[5m]))
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: ""
+            model:
+              expr: sum(rate(span_metrics_calls_total{service_name="order-service", span_kind="SPAN_KIND_SERVER"}[5m]))
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.05
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    type: last
+              expression: "$A / $B"
+              type: math
+              refId: C
+        for: 2m
+        labels:
+          severity: critical
+          service: order-service
+        annotations:
+          summary: "Order service error rate is above 5%"
+          description: "The order service error rate has been above 5% for more than 2 minutes. This likely indicates a downstream service issue (e.g., payment service latency)."
+          runbook_url: ""
+
+contactPoints:
+  - orgId: 1
+    name: default
+    receivers:
+      - uid: default-email
+        type: email
+        settings:
+          addresses: admin@localhost
+
+policies:
+  - orgId: 1
+    receiver: default
