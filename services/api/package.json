@@ -1,0 +1,25 @@
+{
+  "name": "demo-api",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "dev": "node --watch dist/server.js",
+    "dev:ts": "ts-node --esm src/server.ts"
+  },
+  "dependencies": {
+    "express": "5.1.0",
+    "@opentelemetry/api": "1.9.0",
+    "@opentelemetry/sdk-node": "0.202.0",
+    "@opentelemetry/auto-instrumentations-node": "0.62.2",
+    "@opentelemetry/exporter-trace-otlp-http": "0.204.0"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.3",
+    "@types/node": "24.3.1",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.3"
+  }
+}
