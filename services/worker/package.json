@@ -10,7 +10,7 @@
     "dev:ts": "ts-node --esm src/server.ts"
   },
   "dependencies": {
-    "express": "5.1.0",
+    "express": "5.2.0",
     "@opentelemetry/api": "1.9.0",
     "@opentelemetry/sdk-node": "0.202.0",
     "@opentelemetry/auto-instrumentations-node": "0.62.2",
